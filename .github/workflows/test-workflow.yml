@@ -1,0 +1,24 @@
+# test-workflow.yml
+name: Local Composite Action Test
+
+on:
+  workflow_dispatch: # Allows manual trigger from the GitHub UI
+
+jobs:
+  test-action:
+    runs-on: ubuntu-latest # Works on ubuntu-latest, windows-latest, or macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4 # Must check out code to access local action files
+
+      - name: Run Custom PowerShell Action
+        id: custom-greet
+        uses: ./.github/../actions/powershell-greet # Path to the folder containing action.yml
+        with:
+          who-to-greet: 'Developer'
+          greeting-type: 'Welcome'
+
+      - name: Print Action Output
+        shell: pwsh
+        run: |
+          Write-Host "The action replied with: ${{ steps.custom-greet.outputs.greeting-message }}"
