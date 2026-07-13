@@ -1,0 +1,25 @@
+# action.yml
+name: 'PowerShell Greeter'
+description: 'A composite action that generates a custom greeting using PowerShell Core.'
+inputs:
+  who-to-greet:
+    description: 'The name of the person to greet'
+    required: true
+    default: 'World'
+  greeting-type:
+    description: 'The word used to greet someone'
+    required: false
+    default: 'Hello'
+outputs:
+  greeting-message:
+    description: 'The finalized greeting text'
+    value: ${{ steps.run-ps-script.outputs.full-message }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Execute PowerShell Script
+      id: run-ps-script
+      shell: pwsh
+      run: |
+        ${{ github.action_path }}/greet.ps1 -PersonName "${{ inputs.who-to-greet }}" -GreetingWord "${{ inputs.greeting-type }}"
